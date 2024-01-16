@@ -9,22 +9,6 @@
 #include <math.h>
 #include <locale.h>
 
-#ifdef _WIN32
-	#define EXPORT __declspec(dllexport)
-#else
-	#define EXPORT __attribute__((visibility("default")))
-#endif
-
-#ifdef _WIN32
-	#if defined __LP64__ || defined _WIN64
-		#define CallingConvention __attribute__((ms_abi))
-	#else
-		#define CallingConvention __stdcall
-	#endif
-#else
-	#define CallingConvention
-#endif
-
 #define STRFTIME_BUFFER_LENGTH 128
 
 #define Long_MAX_VALUE 0x7fffffffffffffffL
@@ -94,7 +78,7 @@ typedef enum Calendar
     // algorithm for resolving which fields to pay attention to is described
     // in the class documentation.
 
-    //   local fields (YEAR, MONTH, DATE, HOUR, MINUTE, etc.)
+    //   local fields (YEAR, MONTH, df_DATE, HOUR, MINUTE, etc.)
     //           |
     //           | Using Calendar-specific algorithm
     //           V
@@ -116,7 +100,7 @@ typedef enum Calendar
     //           |
     //           | Using Calendar-specific algorithm
     //           V
-    //   local fields (YEAR, MONTH, DATE, HOUR, MINUTE, etc.)
+    //   local fields (YEAR, MONTH, df_DATE, HOUR, MINUTE, etc.)
 
     // In general, a round trip from fields, through local and UTC millis, and
     // back out to fields is made when necessary.  This is implemented by the
@@ -197,14 +181,14 @@ typedef enum Calendar
      *
      * @see #DAY_OF_MONTH
      */
-    DATE = 5,
+    df_DATE = 5,
 
     /**
      * Field number for {@code get} and {@code set} indicating the
-     * day of the month. This is a synonym for {@code DATE}.
+     * day of the month. This is a synonym for {@code df_DATE}.
      * The first day of the month has value 1.
      *
-     * @see #DATE
+     * @see #df_DATE
      */
     DAY_OF_MONTH = 5,
 
@@ -652,7 +636,7 @@ typedef enum DateFormat
      */
     MONTH_FIELD = 2,
     /**
-     * Useful constant for DATE field alignment.
+     * Useful constant for df_DATE field alignment.
      * Used in FieldPosition of date/time formatting.
      */
     DATE_FIELD = 3,
@@ -736,10 +720,10 @@ typedef enum DateFormat
     TIMEZONE_FIELD = 17,
 } dateformat_t;
 
-EXPORT buffer_t CallingConvention *new_buffer(size_t);
-EXPORT void CallingConvention free_buffer(buffer_t *);
-EXPORT void CallingConvention add_char(buffer_t *, char_t);
-EXPORT void CallingConvention add_buffer(buffer_t *, buffer_t *);
+buffer_t *new_buffer(size_t);
+void free_buffer(buffer_t *);
+void add_char(buffer_t *, char_t);
+void add_buffer(buffer_t *, buffer_t *);
 
-EXPORT int CallingConvention dtf_compile(const char *, buffer_t **, char *);
-EXPORT int CallingConvention dtf_format(buffer_t *, time_t, const char *, int, const char *, int, char *);
+int dtf_compile(const char *, buffer_t **, char *);
+int dtf_format(buffer_t *, time_t, const char *, int, const char *, int, char *);
